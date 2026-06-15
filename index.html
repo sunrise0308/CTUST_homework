@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浪愛有家 💕 溫馨動物認養網</title>
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 全域變數與重設 --- */
+        :root {
+            --primary-color: #FFB703;
+            --primary-light: #FFFBEC;
+            --secondary-color: #FB8500;
+            --accent-pink: #FFB5A7;
+            --accent-green: #A3B18A;
+            --text-dark: #4A4A4A;
+            --text-light: #7F7F7F;
+            --white: #FFFFFF;
+            --shadow: 0 8px 24px rgba(0,0,0,0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--primary-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- 導覽列 --- */
+        header {
+            background-color: var(--white);
+            padding: 15px 50px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.5s ease;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 183, 3, 0.3);
+        }
+
+        /* --- 區塊通用樣式 --- */
+        section {
+            padding: 80px 10%;
+            min-height: 80vh;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '🐾';
+            display: block;
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+
+        /* --- 首頁認養專區 --- */
+        #home {
+            background: linear-gradient(180deg, var(--primary-light) 0%, #FFF5E4 100%);
+        }
+
+        /* 控制列：篩選、搜尋與計數 */
+        .controls-wrapper {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--secondary-color);
+            padding: 8px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 20px 10px 45px;
+            border: 2px solid #FFE3A8;
+            border-radius: 50px;
+            outline: none;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(255, 183, 3, 0.2);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .animal-count {
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        /* 動物卡片網格 */
+        .animal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .animal-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: popUp 0.5s ease forwards;
+        }
+
+        .animal-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+
+        /* 照片輪播器 */
+        .carousel-container {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+            background-color: #eee;
+        }
+
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            animation: fadeEffect 0.5s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.7);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            transition: var(--transition);
+            z-index: 5;
+        }
+
+        .carousel-btn:hover {
+            background: var(--white);
+            color: var(--secondary-color);
+        }
+
+        .btn-prev { left: 10px; }
+        .btn-next { right: 10px; }
+
+        .animal-tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tag-dog { color: #5390D9; border-left: 4px solid #5390D9; }
+        .tag-cat { color: #7209B7; border-left: 4px solid #7209B7; }
+
+        /* 卡片內容 */
+        .animal-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .animal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .animal-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .animal-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            background: #F8F9FA;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .adopt-btn {
+            margin-top: auto;
+            background: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .adopt-btn:hover {
+            background: #e07200;
+            letter-spacing: 1px;
+        }
+
+        /* --- 認養前準備區塊 --- */
+        .prep-section {
+            background-color: var(--white);
+            border-radius: 40px;
+            box-shadow: var(--shadow);
+            margin-top: 60px;
+            padding: 40px;
+        }
+
+        .prep-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .prep-card {
+            background: var(--primary-light);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px dashed var(--accent-pink);
+        }
+
+        .prep-card:hover {
+            transform: translateY(-5px);
+            background: #FFF0ED;
+        }
+
+        .prep-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        /* --- 志工招募網頁 --- */
+        #volunteer {
+            background: linear-gradient(180deg, #FFF5E4 0%, #E8F5E9 100%);
+            display: none;
+        }
+
+        .volunteer-banner {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+        }
+
+        .volunteer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .v-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .v-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 8px;
+            background: var(--accent-green);
+        }
+
+        .v-card:hover {
+            transform: scale(1.03);
+        }
+
+        .v-icon {
+            font-size: 3rem;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+        }
+
+        .join-v-btn {
+            display: inline-block;
+            margin-top: 40px;
+            background: var(--accent-green);
+            color: var(--white);
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(163, 177, 138, 0.4);
+            transition: var(--transition);
+        }
+
+        .join-v-btn:hover {
+            background: #8FA174;
+            transform: translateY(-3px);
+        }
+
+        /* --- 認養流程網頁 --- */
+        #process {
+            background: linear-gradient(180deg, #E8F5E9 0%, var(--primary-light) 100%);
+            display: none;
+        }
+
+        .timeline {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background: var(--accent-pink);
+            top: 0; bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+        }
+
+        .timeline-item {
+            padding: 20px 40px;
+            position: relative;
+            width: 50%;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .timeline-item::after {
+            content: '🐾';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            right: -17px;
+            top: 25px;
+            background: var(--white);
+            border: 2px solid var(--accent-pink);
+            border-radius: 50%;
+            z-index: 1;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 26px;
+        }
+
+        .left { left: 0; text-align: right; }
+        .right { left: 50%; }
+        .right::after { left: -13px; }
+
+        .timeline-content {
+            padding: 25px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .timeline-content:hover {
+            box-shadow: 0 10px 25px rgba(255, 181, 167, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .step-num {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-pink);
+            margin-bottom: 5px;
+        }
+
+        /* --- 聯絡資訊卡彈出視窗 (Modal) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--white);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            transform: scale(0.7);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-hint {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: var(--white);
+            color: var(--secondary-color);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--primary-light);
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            transform: translateX(5px);
+            background: #FFF0ED;
+        }
+
+        .contact-item i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            width: 35px;
+            text-align: center;
+        }
+
+        .contact-text h4 {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .contact-text p {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* --- 網頁頁尾 --- */
+        footer {
+            background-color: #333;
+            color: #f4f4f4;
+            padding: 40px 10%;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #555;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-info {
+            text-align: left;
+        }
+
+        .footer-links a {
+            color: #FFB703;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* --- 動畫效果定義 --- */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeEffect {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+
+        /* 響應式密技 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; padding: 15px; }
+            .timeline::before { left: 40px; }
+            .timeline-item { width: 100%; text-align: left !important; padding-left: 70px; }
+            .timeline-item::after { left: 27px; }
+            .controls-wrapper { flex-direction: column; align-items: stretch; }
+            .search-container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <header>
+        <a href="#" class="logo" onclick="switchPage('home')"><i class="fa-solid fa-heart-pulse"></i> 浪愛有家</a>
+        <nav>
+            <a href="#home" class="nav-btn active" id="btn-home" onclick="switchPage('home')"><i class="fa-solid fa-house"></i>首頁</a>
+            <a href="#volunteer" class="nav-btn" id="btn-volunteer" onclick="switchPage('volunteer')"><i class="fa-solid fa-hand-holding-heart"></i>志工招募</a>
+            <a href="#process" class="nav-btn" id="btn-process" onclick="switchPage('process')"><i class="fa-solid fa-route"></i>認養流程</a>
+        </nav>
+    </header>
+
+    <!-- 主內容區塊一：首頁與認養清單 -->
+    <section id="home">
+        <h2 class="section-title">尋找您的本命毛小孩</h2>
+
+        <!-- 控制列（搜尋與篩選機制） -->
+        <div class="controls-wrapper">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterAnimal('all', this)">全部伴侶</button>
+                <button class="filter-btn" onclick="filterAnimal('dog', this)"><i class="fa-solid fa-dog"></i> 汪星人</button>
+                <button class="filter-btn" onclick="filterAnimal('cat', this)"><i class="fa-solid fa-cat"></i> 喵星人</button>
+            </div>
+            
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" oninput="searchAnimal()" placeholder="搜尋名字或品種... (例: 柴犬、可樂)">
+            </div>
+
+            <div class="animal-count" id="matchCount">正在為您展示 20 隻可愛的毛孩</div>
+        </div>
+
+        <!-- 動物動態生成的網格 -->
+        <div class="animal-grid" id="animalGrid">
+            <!-- 由 JavaScript 動態生成 20 隻毛小孩卡片 -->
+        </div>
+
+        <!-- 認養前準備區塊 -->
+        <div class="prep-section">
+            <h3 style="text-align:center; font-size:1.6rem; color:var(--secondary-color); margin-bottom:15px;">🏡 認養前的幸福評估清單</h3>
+            <p style="text-align:center; color:var(--text-light); margin-bottom:30px;">給牠一個家是一辈子的承諾，請與我們一起做最後的居家環境安全自我評估：</p>
+            <div class="prep-grid">
+                <div class="prep-card">
+                    <div class="prep-icon"><i class="fa-solid fa-shield-cat"></i></div>
+                    <h4>空間防護安全</h4>
+                    <p style="font-size:0.9rem; color:var(--text-light); margin-top:10px;">門窗是否已加裝安全防護網或紗窗，避免貓咪或狗狗因好奇失足墜樓？</p>
+                </div>
+                <div class="prep-card">
+                    <div class="prep-icon"><i class="fa-solid fa-clock"></i></div>
+                    <h4>時間與陪伴</h4>
+                    <p style="font-size:0.9rem; color:var(--text-light); margin-top:10px;">每天能否留出至少1-2小時散步、梳毛與互動？能否忍受幼年期的調皮？</p>
+                </div>
+                <div class="prep-card">
+                    <div class="prep-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <h4>經濟與醫療開銷</h4>
+                    <p style="font-size:0.9rem; color:var(--text-light); margin-top:10px;">是否預留了每年定期施打疫苗、驅蟲，以及未來高齡後的醫療照護基金？</p>
+                </div>
+                <div class="prep-card">
+                    <div class="prep-icon"><i class="fa-solid fa-users"></i></div>
+                    <h4>家人共識與房東</h4>
+                    <p style="font-size:0.9rem; color:var(--text-light); margin-top:10px;">同住家人是否皆同意？若為租屋族，房東與社區規範是否確定允許飼養寵物？</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主內容區塊二：志工招募網頁 -->
+    <section id="volunteer">
+        <div class="volunteer-banner">
+            <h2 class="section-title">成為牠們的守護天使 👼</h2>
+            <p style="font-size:1.2rem; color:var(--text-dark);">在牠們找到真正的家之前，您的陪伴是牠們看見世界的唯一窗口。我們正在尋找熱血、有愛心的你加入我們！</p>
+        </div>
+
+        <div class="volunteer-grid">
+            <div class="v-card">
+                <div class="v-icon"><i class="fa-solid fa-dog"></i></div>
+                <h3>犬隻親善與散步志工</h3>
+                <p style="color:var(--text-light); margin-top:15px;">協助缺乏社會化或害羞的狗狗進行散步訓練，幫助牠們建立對人類的信任，提高被認養率！</p>
+            </div>
+            <div class="v-card">
+                <div class="v-icon"><i class="fa-solid fa-hands-holding-child"></i></div>
+                <h3>貓咪極致褓姆</h3>
+                <p style="color:var(--text-light); margin-top:15px;">負責貓房衛生清理、幼貓餵奶與社會化互動。讓貓咪們適應擁抱與撫摸，散發親人魅力。</p>
+            </div>
+            <div class="v-card">
+                <div class="v-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                <h3>影像紀錄與創意小編</h3>
+                <p style="color:var(--text-light); margin-top:15px;">利用相機捕捉毛孩最動人的瞬間！撰寫感人認養文案、剪輯短影音，讓更多人看見牠們。</p>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="javascript:void(0)" class="join-v-btn" onclick="alert('感謝您的熱血！請填寫接下來的志工報名表單，我們將在3天內與您聯絡！')">加入園區志工團隊 🐾</a>
+        </div>
+    </section>
+
+    <!-- 主內容區塊三：認養流程網頁 -->
+    <section id="process">
+        <h2 class="section-title">4步驟：把愛帶回家</h2>
+        
+        <div class="timeline">
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <div class="step-num">01</div>
+                    <h3>線上尋覓與預約</h3>
+                    <p style="color:var(--text-light); margin-top:10px;">瀏覽本站的毛小孩資料，找到心儀的對象後點擊「我想認養」取得聯絡資訊，並向園區預約實體互動時間。</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <div class="step-num">02</div>
+                    <h3>實體互動與面談</h3>
+                    <p style="color:var(--text-light); margin-top:10px;">親自來到園區與毛孩互動，並與現場的認養諮詢師進行15分鐘的簡短面談，共同評估彼此的契合度。</p>
+                </div>
+            </div>
+            <div class="timeline-item left">
+                <div class="timeline-content">
+                    <div class="step-num">03</div>
+                    <h3>居家環境核對</h3>
+                    <p style="color:var(--text-light); margin-top:10px;">確認家中防護設施完整性（如窗網）。若通過評估，園區將免費提供結紮、晶片植入與第一劑基本疫苗。</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="timeline-content">
+                    <div class="step-num">04</div>
+                    <h3>正式成家與追蹤</h3>
+                    <p style="color:var(--text-light); margin-top:10px;">簽署認養協議書，開心地接毛孩回家！成家後小編會定期線上關懷，並隨時提供您新寵物飼養上的諮詢協助。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 溫馨聯絡資訊彈出視窗 (Modal) -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+                <h3 style="font-size: 1.5rem;"><i class="fa-solid fa-paper-plane"></i> 申請認養諮詢</h3>
+                <div class="modal-hint" id="modalTargetName">您目前正在詢問：毛小孩</div>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center; color:var(--text-light); margin-bottom:20px;">太棒了！點燃幸福的第一步已開啟。請透過以下方式與我們聯絡，並告知您想探視上述的毛孩：</p>
+                
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone-bounce"></i>
+                    <div class="contact-text">
+                        <h4>認養專線 (每日 10:00 - 18:00)</h4>
+                        <p>04-2345-6789</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <div class="contact-text">
+                        <h4>官方電子信箱</h4>
+                        <p>adopt@lovehome.org.tw</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div class="contact-text">
+                        <h4>園區地址</h4>
+                        <p>台中市太平區幸福路 777 號</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁面底部 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3 style="color: var(--primary-color); margin-bottom: 10px;">浪愛有家動物保護園區</h3>
+                <p><i class="fa-solid fa-phone"></i> 電話：04-2345-6789</p>
+                <p><i class="fa-solid fa-envelope"></i> 信箱：adopt@lovehome.org.tw</p>
+                <p><i class="fa-solid fa-location-dot"></i> 地址：台中市太平區幸福路 777 號</p>
+            </div>
+            <div class="footer-links">
+                <a href="#home" onclick="switchPage('home')">回到首頁</a> | 
+                <a href="#volunteer" onclick="switchPage('volunteer')">加入志工</a> | 
+                <a href="#process" onclick="switchPage('process')">了解流程</a>
+            </div>
+        </div>
+        <p style="font-size: 0.85rem; color: #aaa;">&copy; 2026 浪愛有家. 用領養代替購買，讓愛延續。</p>
+    </footer>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 10 隻小狗與 10 隻小貓的完整資料集
+        const animals = [
+            // 狗狗區 (10隻)
+            { id: 1, type: 'dog', name: '可樂', breed: '米克斯', age: '3 個月', gender: '男生 ♂', trait: '活潑黏人、超級親狗', health: '已施打第一劑疫苗、已驅蟲', imgs: ['https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500', 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500'] },
+            { id: 2, type: 'dog', name: '年糕', breed: '鬥牛犬', age: '1 歲', gender: '女生 ♀', trait: '獨立安靜、精明有個性', health: '體檢皆正常、已結紮', imgs: ['https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500', 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=500'] },
+            { id: 3, type: 'dog', name: '波比', breed: '黃金獵犬', age: '6 個月', gender: '男生 ♂', trait: '天生暖男、隨和愛笑', health: '有輕微過敏，需吃低敏飼料', imgs: ['https://images.unsplash.com/photo-1552053831-71594a27632d?w=500', 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=500'] },
+            { id: 4, type: 'dog', name: '布丁', breed: '柯基', age: '2 歲', gender: '女生 ♀', trait: '短腿跑得快、非常愛吃', health: '脊椎需要定期注意、體重控制中', imgs: ['https://cdn.shopify.com/s/files/1/0589/3580/4040/files/maolex-blogs-dog-breed-corgi_running-flying_600x600.jpg?v=1762931198', 'https://pgw.udn.com.tw/gw/photo.php?u=https://uc.udn.com.tw/photo/2022/01/17/0/15363580.png&x=0&y=0&sw=0&sh=0&exp=3600&w=720&nt=1'] },
+            { id: 5, type: 'dog', name: '黑糖', breed: '臺灣犬(黑狗)', age: '8 個月', gender: '男生 ♂', trait: '機警聰明、護主、忠誠度高', health: '精力充沛、已打晶片與三劑疫苗', imgs: ['https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Black_8_Year_Taiwan_Dog.jpg/250px-Black_8_Year_Taiwan_Dog.jpg', 'https://faculty.ndhu.edu.tw/~clcheng/hei-pei/mm-1.jpg'] },
+            { id: 6, type: 'dog', name: '巧克力', breed: '貴賓狗', age: '4 歲', gender: '男生 ♂', trait: '不掉毛、喜歡討抱抱', health: '定期洗牙，健康狀況優良', imgs: ['https://images.unsplash.com/photo-1604848698030-c434ba08ece1?w=500', 'https://images.unsplash.com/photo-1534361960057-19889db9621e?w=500'] },
+            { id: 7, type: 'dog', name: '雪球', breed: '薩摩耶', age: '1.5 歲', gender: '女生 ♀', trait: '微笑天使、愛社交親人', health: '毛髮豐厚需定時除濕', imgs: ['https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Samojed00.jpg/250px-Samojed00.jpg', 'https://bucket-image.inkmaginecms.com/version/desktop/1/image/2024/07/d1e21f1a-4730-472b-8531-51b3c7b7890a.jpg'] },
+            { id: 8, type: 'dog', name: '麥芽', breed: '邊境牧羊犬', age: '2 歲', gender: '女生 ♀', trait: '智商擔當、接飛盤高手', health: '已結紮、定期體內外驅蟲', imgs: ['https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?w=500', 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=500'] },
+            { id: 9, type: 'dog', name: '哈魯', breed: '哈士奇', age: '3 歲', gender: '男生 ♂', trait: '傻氣反差萌、話很多喜歡合唱', health: '腸胃較敏感、固定吃益生菌', imgs: ['https://pethotel.hkpro.tw/upload/news/531.JPG', 'https://lovepuppy520.com.tw/wp-content/uploads/2025/02/S__75022376_0.jpg'] },
+            { id: 10, type: 'dog', name: '豆豆', breed: '吉娃娃', age: '5 歲', gender: '男生 ♂', trait: '傲嬌勇敢、熟了之後是跟屁蟲', health: '年長保養，心臟定期追蹤', imgs: ['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500', 'https://images.unsplash.com/photo-1514984879728-be0aff75a6e8?w=500'] },
+
+            // 貓咪區 (10隻)
+            { id: 11, type: 'cat', name: '咪咪', breed: '米克斯(橘貓)', age: '2 個月', gender: '男生 ♂', trait: '大胃王潛力股、極度愛呼嚕', health: '貓愛滋/白血皆陰性、已驅蟲', imgs: ['https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500', 'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=500'] },
+            { id: 12, type: 'cat', name: '露露', breed: '英國短毛貓', age: '1 歲', gender: '女生 ♀', trait: '圓臉好奇寶寶、隨遇而安', health: '健康良好、已完成結紮', imgs: ['https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=500', 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=500'] },
+            { id: 13, type: 'cat', name: '炭頭', breed: '黑貓', age: '5 個月', gender: '男生 ♂', trait: '會踏踏的小黑豹、面惡心善', health: '精神飽滿、疫苗已打齊', imgs: ['https://www.niusnews.com/upload/imgs/default/2022MAR__Chocooooo/8/boots_and_bear_52369429_485480725608569_4302498915280550939_n.jpg', 'https://cdn-general.cybassets.com/s/files/29069/ckeditor/pictures/content_19c84591-a9d4-4645-b4c7-15856e7fac74.jpg'] },
+            { id: 14, type: 'cat', name: '麻糬', breed: '布偶貓', age: '2 歲', gender: '女生 ♀', trait: '仙女美貌、喜歡黏著人睡覺', health: '毛髮極需天天梳理防打結', imgs: ['https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=500', 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=500'] },
+            { id: 15, type: 'cat', name: '花花', breed: '三花貓', age: '10 個月', gender: '女生 ♀', trait: '心思細膩、對逗貓棒無法抗拒', health: '已結紮，親人指數破表', imgs: ['https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=500', 'https://images.unsplash.com/photo-1526336028065-8aadf3167f78?w=500'] },
+            { id: 16, type: 'cat', name: '斑斑', breed: '美式短毛貓', age: '1.5 歲', gender: '男生 ♂', trait: '溫和紳士、從不抓人咬人', health: '體檢過關，身強體壯', imgs: ['https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=500', 'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=500'] },
+            { id: 17, type: 'cat', name: '歐力', breed: '暹羅貓', age: '3 歲', gender: '男生 ♂', trait: '超級碎碎念、愛跟主人頂嘴', health: '已完成絕育、晶片登記', imgs: ['https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=500', 'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=500'] },
+            { id: 18, type: 'cat', name: '棉花糖', breed: '波斯貓', age: '4 歲', gender: '女生 ♀', trait: '文靜优雅、喜歡在窗邊曬太陽', health: '扁臉貓需每日擦拭眼眶淚腺', imgs: ['https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?w=500', 'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500'] },
+            { id: 19, type: 'cat', name: '襪子', breed: '賓士貓', age: '7 個月', gender: '女生 ♀', trait: '精力無限、常做出搞笑舉動', health: '非常健康活潑、食慾極佳+', imgs: ['https://static.popdaily.com.tw/u/202408/582b5c5b-e8bd-49fc-8191-369f6399b126.jpg', 'https://www.niusnews.com/upload/imgs/default/202109_Jennie/0909tuxedo_cat/milada-vigerova-RYiiKQzYjmw-unsplash.jpg'] },
+            { id: 20, type: 'cat', name: '點點', breed: '豹貓', age: '1 歲', gender: '男生 ♂', trait: '活動量大、熱愛攀高和玩水', health: '需大活動空間，已打齊疫苗', imgs: ['https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=500', 'https://images.unsplash.com/photo-1513360309081-36f5e878f210?w=500'] }
+        ];
+
+        let currentFilter = 'all';
+
+        // 初始化渲染網頁
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAnimalGrid(animals);
+        });
+
+        // 渲染動物卡片 HTML 函式
+        function renderAnimalGrid(dataList) {
+            const grid = document.getElementById('animalGrid');
+            grid.innerHTML = '';
+
+            if(dataList.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-light); font-size: 1.2rem;">沒有找到符合名字或品種的毛孩唷 🐾</div>`;
+                return;
+            }
+
+            dataList.forEach(animal => {
+                const card = document.createElement('div');
+                card.className = `animal-card ${animal.type}`;
+                
+                // 動態生成輪播照片 HTML
+                let slidesHtml = '';
+                animal.imgs.forEach((img, index) => {
+                    slidesHtml += `<img src="${img}" class="carousel-slide ${index === 0 ? 'active' : ''}" alt="${animal.name}">`;
+                });
+
+                card.innerHTML = `
+                    <div class="carousel-container">
+                        <span class="animal-tag tag-${animal.type}">${animal.type === 'dog' ? '🐶 小狗' : '🐱 小貓'}</span>
+                        ${slidesHtml}
+                        <button class="carousel-btn btn-prev" onclick="changeSlide(this, -1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="carousel-btn btn-next" onclick="changeSlide(this, 1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="animal-info">
+                        <div class="animal-header">
+                            <span class="animal-name">${animal.name}</span>
+                            <span style="color: ${animal.gender.includes('♂') ? '#5390D9':'#E27396'}; font-weight:bold;">${animal.gender}</span>
+                        </div>
+                        <div class="animal-meta">
+                            <span><strong>品種:</strong> ${animal.breed}</span>
+                            <span><strong>年齡:</strong> ${animal.age}</span>
+                        </div>
+                        <div class="info-item"><span class="info-label">個性：</span>${animal.trait}</div>
+                        <div class="info-item"><span class="info-label">健康：</span>${animal.health}</div>
+                        <button class="adopt-btn" onclick="openModal('${animal.name}', '${animal.breed}')"><i class="fa-solid fa-paw"></i> 我想認養</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            document.getElementById('matchCount').innerText = `正在為您展示 ${dataList.length} 隻可愛的毛孩`;
+        }
+
+        // 照片輪播切換功能
+        function changeSlide(btnElement, direction) {
+            event.stopPropagation(); // 阻止氣泡事件
+            const container = btnElement.parentElement;
+            const slides = container.querySelectorAll('.carousel-slide');
+            let activeIndex = 0;
+
+            slides.forEach((slide, idx) => {
+                if(slide.classList.contains('active')) {
+                    activeIndex = idx;
+                    slide.classList.remove('active');
+                }
+            });
+
+            let nextIndex = activeIndex + direction;
+            if(nextIndex >= slides.length) nextIndex = 0;
+            if(nextIndex < 0) nextIndex = slides.length - 1;
+
+            slides[nextIndex].classList.add('active');
+        }
+
+        // 分頁切換與導覽列樣式變更 (Single Page App 效果)
+        function switchPage(pageId) {
+            // 隱藏所有分頁區塊
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('volunteer').style.display = 'none';
+            document.getElementById('process').style.display = 'none';
+
+            // 移除所有導覽按鈕的 active 樣式
+            document.getElementById('btn-home').classList.remove('active');
+            document.getElementById('btn-volunteer').classList.remove('active');
+            document.getElementById('btn-process').classList.remove('active');
+
+            // 顯示當前選定的區塊、套用樣式變更
+            document.getElementById(pageId).style.display = 'block';
+            document.getElementById(`btn-${pageId}`).classList.add('active');
+
+            // 滾動到頁面頂端
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 分類篩選功能
+        function filterAnimal(type, btn) {
+            currentFilter = type;
+            // 移除同層所有按鈕 active 樣式
+            const buttons = btn.parentElement.querySelectorAll('.filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            executeSearchAndFilter();
+        }
+
+        // 搜尋輸入框功能
+        function searchAnimal() {
+            executeSearchAndFilter();
+        }
+
+        // 綜合處理搜尋與篩選的核心邏輯
+        function executeSearchAndFilter() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            const filteredData = animals.filter(animal => {
+                // 先比對篩選類別 (全部/狗/貓)
+                const matchType = (currentFilter === 'all' || animal.type === currentFilter);
+                // 再比對搜尋關鍵字 (名字或品種)
+                const matchKeyword = animal.name.toLowerCase().includes(keyword) || animal.breed.toLowerCase().includes(keyword);
+                
+                return matchType && matchKeyword;
+            });
+
+            renderAnimalGrid(filteredData);
+        }
+
+        // 開啟聯絡資訊彈出視窗 (Modal)
+        function openModal(name, breed) {
+            document.getElementById('modalTargetName').innerText = `💡 您目前正在詢問：【${breed}】${name}`;
+            document.getElementById('contactModal').classList.add('active');
+        }
+
+        // 關閉聯絡資訊彈出視窗
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+
+        // 點擊彈出視窗外部遮罩層也可關閉
+        document.getElementById('contactModal').addEventListener('click', (e) => {
+            if(e.target === document.getElementById('contactModal')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
